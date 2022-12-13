@@ -2,5 +2,5 @@
 
 int main()
 {
-    std::cout << "Hi" << std::endl;
+    std::cout << "Ho" << std::endl;
 }
