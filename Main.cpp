@@ -1,27 +1,3 @@
-// #include "Platform/Platform.hpp"
-// #include <iostream>
-// using namespace sf;
-
-// int main()
-// {
-// 	util::Platform platform;
-
-// #if defined(_DEBUG)
-// 	std::cout << "Hello World!" << std::endl;
-// #endif
-
-// 	RenderWindow window;
-// 	float screenScalingFactor = platform.getScreenScalingFactor(window.getSystemHandle());
-// 	window.create(VideoMode(200.0f * screenScalingFactor, 200.0f * screenScalingFactor), "SFML works!");
-// 	platform.setIcon(window.getSystemHandle());
-
-// 	CircleShape shape(window.getSize().x / 2);
-// 	shape.setFillColor(Color::White);
-
-// 	Texture shapeTexture;
-// 	shapeTexture.loadFromFile("content/sfml.png");
-// 	shape.setTexture(&shapeTexture);
-
 #include "Platform/Platform.hpp"
 #include "mainChar.hpp"
 #include <C:/SFML-2.5.1/include/SFML/Graphics.hpp>
