@@ -2,6 +2,10 @@
 #include <C:/SFML-2.5.1/include/SFML/Graphics.hpp>
 using namespace sf;
 
+const int Gravity = 0.0000025;
+const int manualAcc = 0.000005;
+const int trivialSpeed = 0.000003;
+
 class Entity
 {
 public:
@@ -58,21 +62,32 @@ public:
 
 	Vector2f update(Vector2f speed)
 	{
-		Vector2f acc(0, 0.0000025);
+		// default y-acceleration is the gravity
+		Vector2f acc(0, Gravity);
+
+		// add additional acceleration to acc
 		if (up)
-			acc.y -= 0.000005;
+			acc.y -= manualAcc;
 		if (down)
-			acc.y += 0.000005;
+			acc.y += manualAcc;
 		if (left)
-			acc.x -= 0.000005;
+			acc.x -= manualAcc;
 		if (right)
-			acc.x += 0.000005;
+			acc.x += manualAcc;
+
+		// alter the speed and then move
 		speed.x += acc.x;
 		speed.y += acc.y;
+
 		circle.move(speed);
+
+		// forms a horizontal drag to prevent player from moving infinitely
 		if (abs(speed.x))
 			speed.x *= 0.9999;
-		if (abs(speed.x) < 0.000003)
+
+		// stop horizontal movement entirely if the horizontal speed is small
+		// enough
+		if (abs(speed.x) < trivialSpeed)
 			speed.x = 0;
 		return speed;
 	}
