@@ -2,9 +2,9 @@
 #include <C:/SFML-2.5.1/include/SFML/Graphics.hpp>
 using namespace sf;
 
-const int Gravity = 0.0000025;
-const int manualAcc = 0.000005;
-const int trivialSpeed = 0.000003;
+const float Gravity = 0.0000025;
+const float manualAcc = 0.000005;
+const float trivialSpeed = 0.000003;
 
 class Entity
 {
