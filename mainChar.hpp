@@ -4,7 +4,10 @@ using namespace sf;
 
 const float Gravity = 0.0000025;
 const float manualAcc = 0.000005;
-const float trivialSpeed = 0.000003;
+// trivial horizontal speed that can be omitted
+const float omitSpeed = 0.000003;
+const int cells = 5;
+const int fuelPerCell = 150;
 
 class Entity
 {
@@ -16,12 +19,15 @@ public:
 		down = false;
 		left = false;
 		right = false;
+		fuel = cells * fuelPerCell;
 	}
 
 	void processEvents(Keyboard::Key key, bool checkPressed)
 	{
 		if (checkPressed == true)
 		{
+			fuel -= 1;
+			std::cout << fuel << " ";
 			if (key == Keyboard::W)
 			{
 				down = true;
@@ -87,7 +93,7 @@ public:
 
 		// stop horizontal movement entirely if the horizontal speed is small
 		// enough
-		if (abs(speed.x) < trivialSpeed)
+		if (abs(speed.x) < omitSpeed)
 			speed.x = 0;
 		return speed;
 	}
@@ -103,4 +109,5 @@ private:
 	bool down;
 	bool left;
 	bool right;
+	int fuel;
 };
