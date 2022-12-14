@@ -1,7 +1,6 @@
-#include "Platform/Platform.hpp"
-#include "mainChar.hpp"
-#include <C:/SFML-2.5.1/include/SFML/Graphics.hpp>
+#include <SFML/Graphics.hpp>
 #include <iostream>
+#include "mainChar.hpp"
 using namespace sf;
 
 int main()
@@ -12,7 +11,7 @@ int main()
 
 	Entity player(window.getSize().y / 15);
 	Vector2f speed(0, 0);
-
+	Clock clock;
 	while (window.isOpen())
 	{
 		while (window.pollEvent(event))
@@ -25,7 +24,8 @@ int main()
 				player.processEvents(event.key.code, false);
 		}
 		window.clear();
-		speed = player.update(speed);
+		Time elapsed = clock.restart();
+		speed = player.update(speed , elapsed);
 		player.drawTo(window);
 		window.display();
 	}

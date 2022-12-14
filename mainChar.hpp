@@ -1,13 +1,12 @@
-#include "Platform/Platform.hpp"
-#include <C:/SFML-2.5.1/include/SFML/Graphics.hpp>
+#include <SFML/Graphics.hpp>
 using namespace sf;
 
-const float Gravity = 0.0000025;
-const float manualAcc = 0.000005;
+const float Gravity = 0.07;
+const float manualAcc = 0.2;
 // trivial horizontal speed that can be omitted
-const float omitSpeed = 0.000003;
 const int cells = 5;
 const int fuelPerCell = 150;
+const float frictionConstant = 0.001;
 
 class Entity
 {
@@ -66,7 +65,7 @@ public:
 		}
 	}
 
-	Vector2f update(Vector2f speed)
+	Vector2f update(Vector2f speed , Time elapsed)
 	{
 		// default y-acceleration is the gravity
 		Vector2f acc(0, Gravity);
@@ -85,16 +84,15 @@ public:
 		speed.x += acc.x;
 		speed.y += acc.y;
 
-		circle.move(speed);
+		circle.move(speed*elapsed.asSeconds());
+		// see example at https://www.sfml-dev.org/tutorials/2.5/graphics-vertex-array.php
+		
+		// add friction see https://www.softschools.com/formulas/physics/air_resistance_formula/85/
+		speed.x -= (speed.x>0?1:-1)*frictionConstant * speed.x * speed.x * elapsed.asSeconds();
+		speed.y -= (speed.y>0?1:-1)*frictionConstant * speed.y * speed.y *elapsed.asSeconds();
 
-		// forms a horizontal drag to prevent player from moving infinitely
-		if (abs(speed.x))
-			speed.x *= 0.9999;
 
-		// stop horizontal movement entirely if the horizontal speed is small
-		// enough
-		if (abs(speed.x) < omitSpeed)
-			speed.x = 0;
+
 		return speed;
 	}
 
