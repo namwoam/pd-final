@@ -10,7 +10,7 @@ int main()
 
 	RenderWindow window(VideoMode(900, 900), "title", Style::Titlebar | Style::Close);
 	Texture t;
-	t.loadFromFile("C:/Users/olaba/Downloads/1671090937051.jpg");
+	t.loadFromFile("1671090937051.jpg");
 	Sprite backGround(t);
 
 	Event event;
