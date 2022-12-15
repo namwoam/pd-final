@@ -1,8 +1,8 @@
 #include <SFML/Graphics.hpp>
 #include <iostream>
 #include <string>
-const float Gravity = 0.07;
-const float manualAcc = 0.2;
+const float Gravity = 0.1;
+const float manualAcc = 0.3;
 const int fuelCapacity = 200;
 const float frictionConstant = 0.001;
 using namespace sf;
