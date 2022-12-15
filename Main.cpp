@@ -25,8 +25,8 @@ int main()
 		}
 		window.clear();
 		Time elapsed = clock.restart();
-		speed = player.update(speed , elapsed);
-		player.drawTo(window);
+		player.updateMotion(elapsed);
+		player.updateDisplay(window);
 		window.display();
 	}
 

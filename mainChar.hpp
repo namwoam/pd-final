@@ -1,12 +1,11 @@
 #include <SFML/Graphics.hpp>
-using namespace sf;
-
+#include <iostream>
+#include <string>
 const float Gravity = 0.07;
 const float manualAcc = 0.2;
-// trivial horizontal speed that can be omitted
-const int cells = 5;
-const int fuelPerCell = 150;
+const int fuelCapacity = 200;
 const float frictionConstant = 0.001;
+using namespace sf;
 
 class Entity
 {
@@ -18,15 +17,20 @@ public:
 		down = false;
 		left = false;
 		right = false;
-		fuel = cells * fuelPerCell;
+		fuel = fuelCapacity;
+		speed = Vector2f(0, 0);
+		money = 0;
 	}
 
 	void processEvents(Keyboard::Key key, bool checkPressed)
 	{
 		if (checkPressed == true)
 		{
+			if (fuel<=0){
+				return;
+			}
 			fuel -= 1;
-			std::cout << fuel << " ";
+			std::cout << fuel <<std::endl;
 			if (key == Keyboard::W)
 			{
 				down = true;
@@ -65,7 +69,7 @@ public:
 		}
 	}
 
-	Vector2f update(Vector2f speed , Time elapsed)
+	void updateMotion(Time elapsed)
 	{
 		// default y-acceleration is the gravity
 		Vector2f acc(0, Gravity);
@@ -90,15 +94,31 @@ public:
 		// add friction see https://www.softschools.com/formulas/physics/air_resistance_formula/85/
 		speed.x -= (speed.x>0?1:-1)*frictionConstant * speed.x * speed.x * elapsed.asSeconds();
 		speed.y -= (speed.y>0?1:-1)*frictionConstant * speed.y * speed.y *elapsed.asSeconds();
-
-
-
-		return speed;
 	}
 
-	void drawTo(RenderWindow& window)
+	void updateDisplay(RenderWindow& window)
 	{
 		window.draw(circle);
+		Text moneyDisplay , fuelDisplay;
+		Font spaceFont;
+		spaceFont.loadFromFile("SpaceGrotesk-Regular.ttf");
+		// no default font QQ https://en.sfml-dev.org/forums/index.php?topic=8752.0
+		std::string moneyText = "$: ";
+		moneyText += std::to_string(money);
+		std::string fuelText = "Fuel: ";
+		fuelText += (std::to_string(fuel) + std::string (1 , '/') + std::to_string(fuelCapacity));
+		moneyDisplay.setString(moneyText.c_str());
+		moneyDisplay.setFont(spaceFont);
+		moneyDisplay.setCharacterSize(32);
+		moneyDisplay.setFillColor(Color::White);
+		moneyDisplay.setPosition(Vector2f(5 , 5));
+		fuelDisplay.setString(fuelText.c_str());
+		fuelDisplay.setFont(spaceFont);
+		fuelDisplay.setCharacterSize(32);
+		fuelDisplay.setFillColor(Color::White);
+		fuelDisplay.setPosition(Vector2f(100 , 5));
+		window.draw(moneyDisplay);
+		window.draw(fuelDisplay);
 	}
 
 private:
@@ -108,4 +128,6 @@ private:
 	bool left;
 	bool right;
 	int fuel;
+	int money;
+	Vector2f speed;
 };
