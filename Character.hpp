@@ -6,10 +6,13 @@ const int PLAYER_SIZE = 10;
 const float GRAVITY = 0.1;
 const float MANUAL_ACC = 0.3;
 const int FUEL_CAPACITY = 500;
+const int FUEL_PER_UNIT = 50;
 const float FRICTION_CONSTANT = 0.001;
 const int COOL_DOWN = 1000;
 const int MONEY_UNIT = 25;
 const int FUEL_PER_MONEY = 100;
+
+int min(int a, int b);
 
 class Entity
 {
@@ -25,7 +28,7 @@ public:
 		down = false;
 		left = false;
 		right = false;
-		fuel = FUEL_CAPACITY;
+		fuel = FUEL_CAPACITY * FUEL_PER_UNIT;
 		speed = Vector2f(0, 0);
 		money = 0;
 		timer = 0;
@@ -35,6 +38,11 @@ public:
 	{
 		Vector2f position(circle.getPosition().x + PLAYER_SIZE, circle.getPosition().y + PLAYER_SIZE);
 		return position;
+	}
+
+	void setPos(int x, int y)
+	{
+		circle.setPosition(x - PLAYER_SIZE, y - PLAYER_SIZE);
 	}
 
 	void processEvents(Keyboard::Key key, bool checkPressed)
@@ -77,8 +85,6 @@ public:
 				left = false;
 			}
 		}
-		if ((up || down || left || right) && fuel > 0)
-			fuel--;
 	}
 
 	void updateMotion(Time elapsed)
@@ -119,6 +125,9 @@ public:
 
 	void updateDisplay(RenderWindow& window)
 	{
+		if ((up || down || left || right) && fuel > 0)
+			fuel--;
+
 		window.draw(circle);
 		Text moneyDisplay, fuelDisplay;
 		Font spaceFont;
@@ -128,7 +137,7 @@ public:
 		std::string moneyText = "$: ";
 		moneyText += std::to_string(money / MONEY_UNIT);
 		std::string fuelText = "Fuel: ";
-		fuelText += (std::to_string(fuel) + std::string(1, '/') + std::to_string(FUEL_CAPACITY));
+		fuelText += (std::to_string(fuel / FUEL_PER_UNIT) + std::string(1, '/') + std::to_string(FUEL_CAPACITY));
 		moneyDisplay.setString(moneyText.c_str());
 		moneyDisplay.setFont(spaceFont);
 		moneyDisplay.setCharacterSize(32);
@@ -163,12 +172,12 @@ public:
 
 	void addFuel()
 	{
-		if (fuel == FUEL_CAPACITY || money == 0)
+		if (fuel == FUEL_CAPACITY * FUEL_PER_UNIT || money == 0)
 			return;
 		if (money > 0) // to be finished
 		{
 			if (money % MONEY_UNIT == 0)
-				fuel += FUEL_PER_MONEY;
+				fuel += min(FUEL_PER_MONEY * FUEL_PER_UNIT, FUEL_CAPACITY * FUEL_PER_UNIT - fuel);
 			money--;
 			if (money < MONEY_UNIT)
 				money = 0;
@@ -196,3 +205,10 @@ private:
 	int money;
 	Vector2f speed;
 };
+
+int min(int a, int b)
+{
+	if (a < b)
+		return a;
+	return b;
+}
