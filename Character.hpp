@@ -52,7 +52,6 @@ public:
 			if (key == Keyboard::S)
 			{
 				up = true;
-				std::cout << "Y";
 			}
 			if (key == Keyboard::D)
 			{
