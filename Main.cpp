@@ -57,9 +57,6 @@ int main()
 		Time elapsed = clock.restart();
 		player.updateMotion(elapsed);
 
-		if (player.timer > 0)
-			player.timer--;
-
 		switch (collidesWithRest(imgMap[curBg], player.getPos().x, player.getPos().y))
 		{
 			case 0:
@@ -93,18 +90,22 @@ int main()
 
 			case 1:
 				player.yStop(false);
+				player.damage();
 				break;
 
 			case 2:
 				player.yStop(true);
+				player.damage();
 				break;
 
 			case 3:
 				player.xStop(false);
+				player.damage();
 				break;
 
 			case 4:
 				player.xStop(true);
+				player.damage();
 				break;
 
 			default:
@@ -118,24 +119,24 @@ int main()
 
 			case 1:
 				curBg += 2;
-				player.setPos(player.getPos().x, player.getPos().y - 830);
+				player.setPos(player.getPos().x, player.getPos().y - 840);
 				break;
 
 			case 2:
 				curBg -= 2;
-				player.setPos(player.getPos().x, player.getPos().y + 830);
+				player.setPos(player.getPos().x, player.getPos().y + 840);
 				break;
 
 			case 3:
 				// shift x-coordinate to the right
 				curBg -= 1;
-				player.setPos(player.getPos().x + 830, player.getPos().y);
+				player.setPos(player.getPos().x + 840, player.getPos().y);
 				break;
 
 			case 4:
 				// shift x-coordinate to the left
 				curBg += 1;
-				player.setPos(player.getPos().x - 830, player.getPos().y);
+				player.setPos(player.getPos().x - 840, player.getPos().y);
 				break;
 
 			default:
