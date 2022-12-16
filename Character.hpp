@@ -5,16 +5,22 @@
 const int PLAYER_SIZE = 10;
 const float GRAVITY = 0.1;
 const float MANUAL_ACC = 0.3;
-const int FUEL_CAPACITY = 200;
+const int FUEL_CAPACITY = 500;
 const float FRICTION_CONSTANT = 0.001;
+const int COOL_DOWN = 1000;
+const int MONEY_UNIT = 25;
+const int FUEL_PER_MONEY = 100;
 
 class Entity
 {
 public:
+	int timer;
 	Entity()
 	{
 		circle.setRadius(PLAYER_SIZE);
-		circle.setPosition(150, 10);
+		circle.setPosition(250, 10);
+		vertStop = 0;
+		horStop = 0;
 		up = false;
 		down = false;
 		left = false;
@@ -22,11 +28,12 @@ public:
 		fuel = FUEL_CAPACITY;
 		speed = Vector2f(0, 0);
 		money = 0;
+		timer = 0;
 	}
 
 	Vector2f getPos()
 	{
-		Vector2f position(circle.getPosition().x, circle.getPosition().y);
+		Vector2f position(circle.getPosition().x + PLAYER_SIZE, circle.getPosition().y + PLAYER_SIZE);
 		return position;
 	}
 
@@ -34,7 +41,6 @@ public:
 	{
 		if (checkPressed == true && fuel > 0)
 		{
-			fuel -= 1;
 			if (key == Keyboard::W)
 			{
 				down = true;
@@ -46,6 +52,7 @@ public:
 			if (key == Keyboard::S)
 			{
 				up = true;
+				std::cout << "Y";
 			}
 			if (key == Keyboard::D)
 			{
@@ -71,6 +78,8 @@ public:
 				left = false;
 			}
 		}
+		if ((up || down || left || right) && fuel > 0)
+			fuel--;
 	}
 
 	void updateMotion(Time elapsed)
@@ -92,8 +101,17 @@ public:
 		speed.x += acc.x;
 		speed.y += acc.y;
 
-		circle.move(speed * elapsed.asSeconds());
+		speed.x -= horStop;
+		speed.y += vertStop;
+
 		// see example at https://www.sfml-dev.org/tutorials/2.5/graphics-vertex-array.php
+		circle.move(speed * elapsed.asSeconds());
+
+		speed.x += horStop;
+		speed.y -= vertStop;
+
+		horStop = 0;
+		vertStop = 0;
 
 		// add friction see https://www.softschools.com/formulas/physics/air_resistance_formula/85/
 		speed.x -= (speed.x > 0 ? 1 : -1) * FRICTION_CONSTANT * speed.x * speed.x * elapsed.asSeconds();
@@ -109,7 +127,7 @@ public:
 		spaceFont.loadFromFile("C:/Windows/Fonts/arial.ttf");
 		// no default font QQ https://en.sfml-dev.org/forums/index.php?topic=8752.0
 		std::string moneyText = "$: ";
-		moneyText += std::to_string(money);
+		moneyText += std::to_string(money / MONEY_UNIT);
 		std::string fuelText = "Fuel: ";
 		fuelText += (std::to_string(fuel) + std::string(1, '/') + std::to_string(FUEL_CAPACITY));
 		moneyDisplay.setString(moneyText.c_str());
@@ -125,15 +143,52 @@ public:
 		window.draw(moneyDisplay);
 		window.draw(fuelDisplay);
 	}
-	
-	void stop()
+
+	void xStop(bool positive)
 	{
 		speed.x = 0;
+		if (positive)
+			horStop = 10;
+		else
+			horStop = -10;
+	}
+
+	void yStop(bool positive)
+	{
 		speed.y = 0;
+		if (positive)
+			vertStop = 10;
+		else
+			vertStop = -10;
+	}
+
+	void addFuel()
+	{
+		if (fuel == FUEL_CAPACITY || money == 0)
+			return;
+		if (money > 0) // to be finished
+		{
+			if (money % MONEY_UNIT == 0)
+				fuel += FUEL_PER_MONEY;
+			money--;
+			if (money < MONEY_UNIT)
+				money = 0;
+		}
+	}
+
+	void earn()
+	{
+		if (timer == 0)
+		{
+			money += MONEY_UNIT;
+			timer = COOL_DOWN;
+		}
 	}
 
 private:
 	CircleShape circle;
+	int vertStop;
+	int horStop;
 	bool up;
 	bool down;
 	bool left;
