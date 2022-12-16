@@ -125,6 +125,12 @@ public:
 		window.draw(moneyDisplay);
 		window.draw(fuelDisplay);
 	}
+	
+	void stop()
+	{
+		speed.x = 0;
+		speed.y = 0;
+	}
 
 private:
 	CircleShape circle;
