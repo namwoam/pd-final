@@ -2,22 +2,23 @@
 #include <iostream>
 #include <string>
 
+
 const int PLAYER_SIZE = 10;
 const float GRAVITY = 0.1;
 const float MANUAL_ACC = 0.3;
-const int FUEL_CAPACITY = 500;
-const int FUEL_PER_UNIT = 50;
+const int FUEL_CAPACITY = 400;
+const int FUEL_PER_UNIT = 50; // effects how fast fuel consumes
 const float FRICTION_CONSTANT = 0.001;
-const int COOL_DOWN = 1000;
-const int MONEY_UNIT = 25;
-const int FUEL_PER_MONEY = 100;
+const int COIN_COOL_DOWN = 1000; // effects how often a player can gain a coin
+const int DMG_COOL_DOWN = 250;	 // effects the invincible time after taking damage
+const int MONEY_UNIT = 25;		 // effects the frequency of adding fuel
+const int FUEL_PER_MONEY = 50;	 // effects how much fuel a player gains through one coin
 
 int min(int a, int b);
 
 class Entity
 {
 public:
-	int timer;
 	Entity()
 	{
 		circle.setRadius(PLAYER_SIZE);
@@ -31,7 +32,8 @@ public:
 		fuel = FUEL_CAPACITY * FUEL_PER_UNIT;
 		speed = Vector2f(0, 0);
 		money = 0;
-		timer = 0;
+		coinTimer = 0;
+		dmgTimer = 0;
 	}
 
 	Vector2f getPos()
@@ -128,6 +130,12 @@ public:
 		if ((up || down || left || right) && fuel > 0)
 			fuel--;
 
+		if (coinTimer > 0)
+			coinTimer--;
+
+		if (dmgTimer > 0)
+			dmgTimer--;
+
 		window.draw(circle);
 		Text moneyDisplay, fuelDisplay;
 		Font spaceFont;
@@ -186,10 +194,19 @@ public:
 
 	void earn()
 	{
-		if (timer == 0)
+		if (coinTimer == 0)
 		{
 			money += MONEY_UNIT;
-			timer = COOL_DOWN;
+			coinTimer = COIN_COOL_DOWN;
+		}
+	}
+
+	void damage()
+	{
+		if (dmgTimer == 0)
+		{
+			fuel -= 25 * FUEL_PER_UNIT;
+			dmgTimer = DMG_COOL_DOWN;
 		}
 	}
 
@@ -203,6 +220,8 @@ private:
 	bool right;
 	int fuel;
 	int money;
+	int coinTimer;
+	int dmgTimer;
 	Vector2f speed;
 };
 
