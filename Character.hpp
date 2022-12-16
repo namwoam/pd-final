@@ -2,11 +2,10 @@
 #include <iostream>
 #include <string>
 
-
 const int PLAYER_SIZE = 10;
 const float GRAVITY = 0.1;
-const float MANUAL_ACC = 0.3;
-const int FUEL_CAPACITY = 400;
+const float MANUAL_ACC = 0.5;
+const int FUEL_CAPACITY = 4000;
 const int FUEL_PER_UNIT = 50; // effects how fast fuel consumes
 const float FRICTION_CONSTANT = 0.001;
 const int COIN_COOL_DOWN = 1000; // effects how often a player can gain a coin
@@ -25,6 +24,7 @@ public:
 		circle.setPosition(250, 10);
 		vertStop = 0;
 		horStop = 0;
+		stop = false;
 		up = false;
 		down = false;
 		left = false;
@@ -49,6 +49,8 @@ public:
 
 	void processEvents(Keyboard::Key key, bool checkPressed)
 	{
+		if (stop)
+			return;
 		if (checkPressed == true && fuel > 0)
 		{
 			if (key == Keyboard::W)
@@ -91,6 +93,9 @@ public:
 
 	void updateMotion(Time elapsed)
 	{
+		if (stop)
+			return;
+
 		// default y-acceleration is the gravity
 		Vector2f acc(0, GRAVITY);
 
@@ -127,6 +132,9 @@ public:
 
 	void updateDisplay(RenderWindow& window)
 	{
+		if (stop)
+			return;
+
 		if ((up || down || left || right) && fuel > 0)
 			fuel--;
 
@@ -203,17 +211,23 @@ public:
 
 	void damage()
 	{
-		if (dmgTimer == 0)
+		if (dmgTimer == 0 && fuel > 0)
 		{
-			fuel -= 25 * FUEL_PER_UNIT;
+			fuel -= min(25 * FUEL_PER_UNIT, fuel);
 			dmgTimer = DMG_COOL_DOWN;
 		}
+	}
+
+	void end()
+	{
+		stop = true;
 	}
 
 private:
 	CircleShape circle;
 	int vertStop;
 	int horStop;
+	bool stop;
 	bool up;
 	bool down;
 	bool left;
