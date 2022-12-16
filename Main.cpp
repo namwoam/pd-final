@@ -117,38 +117,32 @@ int main()
 				break;
 
 			case 1:
-				player.yStop(false); // should be removed
-
-				// shift y-coordinate to the top
-
+				curBg += 2;
+				player.setPos(player.getPos().x, player.getPos().y - 830);
 				break;
 
 			case 2:
-				player.yStop(true); // should be removed
-
-				// shift y - coordinate to the bottom
-
+				curBg -= 2;
+				player.setPos(player.getPos().x, player.getPos().y + 830);
 				break;
 
 			case 3:
-				player.xStop(false); // should be removed
-
 				// shift x-coordinate to the right
-
+				curBg -= 1;
+				player.setPos(player.getPos().x + 830, player.getPos().y);
 				break;
 
 			case 4:
-				player.xStop(true); // should be removed
-
 				// shift x-coordinate to the left
-
+				curBg += 1;
+				player.setPos(player.getPos().x - 830, player.getPos().y);
 				break;
 
 			default:
 				break;
 		}
 
-		if (collidesWithCoin(imgMap[curBg], player.getPos().x, player.getPos().y)) // might need a cooler
+		if (collidesWithCoin(imgMap[curBg], player.getPos().x, player.getPos().y))
 		{
 			player.earn();
 		}
@@ -213,23 +207,31 @@ int collidesWithWall(Image backGround, int x, int y)
 int collidesWithTrans(Image backGround, int x, int y)
 {
 	if (backGround.getPixel(x, y + PLAYER_SIZE).r > 150
+		&& backGround.getPixel(x, y + PLAYER_SIZE).r < 190
 		&& backGround.getPixel(x, y + PLAYER_SIZE).g > 200
-		&& backGround.getPixel(x, y + PLAYER_SIZE).b > 160)
+		&& backGround.getPixel(x, y + PLAYER_SIZE).b > 160
+		&& backGround.getPixel(x, y + PLAYER_SIZE).b < 210)
 		return 1;
 
 	if (backGround.getPixel(x, y - PLAYER_SIZE).r > 150
+		&& backGround.getPixel(x, y - PLAYER_SIZE).r < 190
 		&& backGround.getPixel(x, y - PLAYER_SIZE).g > 200
-		&& backGround.getPixel(x, y - PLAYER_SIZE).b > 160)
+		&& backGround.getPixel(x, y - PLAYER_SIZE).b > 160
+		&& backGround.getPixel(x, y - PLAYER_SIZE).b < 210)
 		return 2;
 
 	if (backGround.getPixel(x - PLAYER_SIZE, y).r > 150
+		&& backGround.getPixel(x - PLAYER_SIZE, y).r < 190
 		&& backGround.getPixel(x - PLAYER_SIZE, y).g > 200
-		&& backGround.getPixel(x - PLAYER_SIZE, y).b > 160)
+		&& backGround.getPixel(x - PLAYER_SIZE, y).b > 160
+		&& backGround.getPixel(x - PLAYER_SIZE, y).b < 210)
 		return 3;
 
 	if (backGround.getPixel(x + PLAYER_SIZE, y).r > 150
+		&& backGround.getPixel(x + PLAYER_SIZE, y).r < 190
 		&& backGround.getPixel(x + PLAYER_SIZE, y).g > 200
-		&& backGround.getPixel(x + PLAYER_SIZE, y).b > 160)
+		&& backGround.getPixel(x + PLAYER_SIZE, y).b > 160
+		&& backGround.getPixel(x + PLAYER_SIZE, y).b < 210)
 		return 4;
 
 	return 0;
