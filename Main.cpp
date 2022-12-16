@@ -47,7 +47,6 @@ int main()
 			if (event.type == Event::KeyPressed)
 			{
 				player.processEvents(event.key.code, true);
-				std::cout << "a key is being pressed";
 			}
 			if (event.type == Event::KeyReleased)
 				player.processEvents(event.key.code, false);
