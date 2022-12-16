@@ -6,6 +6,7 @@ using namespace sf;
 int collidesWithRest(Image image, int x, int y);
 int collidesWithWall(Image image, int x, int y);
 int collidesWithTrans(Image image, int x, int y);
+int collidesWithFinish(Image image, int x, int y);
 bool collidesWithCoin(Image image, int x, int y);
 
 int main()
@@ -148,6 +149,23 @@ int main()
 			player.earn();
 		}
 
+		switch (collidesWithFinish(imgMap[curBg], player.getPos().x, player.getPos().y))
+		{
+			case 0:
+				break;
+
+			case 1:
+				player.yStop(true);
+				break;
+
+			case 2:
+				player.end();
+				break;
+
+			default:
+				break;
+		}
+
 		player.updateDisplay(window);
 		window.display();
 	}
@@ -235,6 +253,26 @@ int collidesWithTrans(Image backGround, int x, int y)
 		&& backGround.getPixel(x + PLAYER_SIZE, y).b < 210)
 		return 4;
 
+	return 0;
+}
+
+int collidesWithFinish(Image backGround, int x, int y)
+{
+	if (backGround.getPixel(x, y - PLAYER_SIZE).r > 215
+		&& backGround.getPixel(x, y - PLAYER_SIZE).r < 235
+		&& backGround.getPixel(x, y - PLAYER_SIZE).g > 150
+		&& backGround.getPixel(x, y - PLAYER_SIZE).g < 180
+		&& backGround.getPixel(x, y - PLAYER_SIZE).b > 230
+		&& backGround.getPixel(x, y - PLAYER_SIZE).b < 255)
+		return 1;
+
+	if (backGround.getPixel(x - PLAYER_SIZE, y).r > 215
+		&& backGround.getPixel(x - PLAYER_SIZE, y).r < 235
+		&& backGround.getPixel(x - PLAYER_SIZE, y).g > 150
+		&& backGround.getPixel(x - PLAYER_SIZE, y).g < 180
+		&& backGround.getPixel(x - PLAYER_SIZE, y).b > 230
+		&& backGround.getPixel(x - PLAYER_SIZE, y).b < 255)
+		return 2;
 	return 0;
 }
 
