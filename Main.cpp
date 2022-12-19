@@ -16,26 +16,32 @@ int main()
 
 	RenderWindow window(VideoMode(900, 900), "PD Final", Style::Titlebar | Style::Close);
 
-	Texture topLeft, topRight, bottomLeft, bottomRight, beginning;
+	Texture topLeft, topRight, bottomLeft, bottomRight, beginning, succeeded, failed;
 	topLeft.loadFromFile("topLeft.png");
 	topRight.loadFromFile("topRight.png");
 	bottomLeft.loadFromFile("bottomLeft.png");
 	bottomRight.loadFromFile("bottomRight.png");
 	beginning.loadFromFile("beginning.png");
+	succeeded.loadFromFile("succeeded.png");
+	failed.loadFromFile("failed.png");
 
-	Sprite* map[5];
+	Sprite* map[7];
 	map[0] = new Sprite(topLeft);
 	map[1] = new Sprite(topRight);
 	map[2] = new Sprite(bottomLeft);
 	map[3] = new Sprite(bottomRight);
 	map[4] = new Sprite(beginning);
+	map[5] = new Sprite(succeeded);
+	map[6] = new Sprite(failed);
 
-	Image imgMap[5];
+	Image imgMap[7];
 	imgMap[0].loadFromFile("topLeft.png");
 	imgMap[1].loadFromFile("topRight.png");
 	imgMap[2].loadFromFile("bottomLeft.png");
 	imgMap[3].loadFromFile("bottomRight.png");
 	imgMap[4].loadFromFile("beginning.png");
+	imgMap[5].loadFromFile("succeeded.png");
+	imgMap[6].loadFromFile("failed.png");
 
 	Event event;
 
@@ -60,14 +66,26 @@ int main()
 			}
 			else
 			{
-				if (event.type == Event::KeyPressed)
+				if (event.type == Event::KeyReleased)
 				{
 					if (event.key.code == Keyboard::Space)
 					{
-						player.begin();
+						if (player.available())
+							player.begin();
+						else
+							player.reset();
+						curBg = 4;
 					}
+					if (event.key.code == Keyboard::Escape)
+						window.close();
 				}
 			}
+		}
+
+		if (player.empty())
+		{
+			player.end();
+			curBg = 6;
 		}
 
 		window.clear();
@@ -177,6 +195,7 @@ int main()
 
 			case 2:
 				player.end();
+				curBg = 5;
 				break;
 
 			case 3:
