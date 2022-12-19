@@ -2,8 +2,6 @@
 #include <iostream>
 #include <string>
 
-using namespace sf;
-
 const int PLAYER_SIZE = 10;
 const float GRAVITY = 0.1;
 const float MANUAL_ACC = 0.5;
@@ -157,7 +155,7 @@ public:
 		}
 	}
 
-	void updateDisplay(RenderWindow &window)
+	void updateDisplay(RenderWindow& window)
 	{
 		if (stop)
 			return;
@@ -250,6 +248,12 @@ public:
 	void end()
 	{
 		stop = true;
+		speed.x = 0;
+		speed.y = 0;
+		up = false;
+		down = false;
+		left = false;
+		right = false;
 	}
 
 private:
