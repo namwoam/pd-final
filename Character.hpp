@@ -6,8 +6,8 @@ using namespace sf;
 
 const int PLAYER_SIZE = 10;
 const float GRAVITY = 0.1;
-const float MANUAL_ACC = 0.5;
-const int FUEL_CAPACITY = 4000;
+const float MANUAL_ACC = 0.3;
+const int FUEL_CAPACITY = 4;
 const int FUEL_PER_UNIT = 50; // effects how fast fuel consumes
 const float FRICTION_CONSTANT = 0.001;
 const int COIN_COOL_DOWN = 1000; // effects how often a player can gain a coin
@@ -26,6 +26,7 @@ public:
 	{
 		circle.setRadius(PLAYER_SIZE);
 		circle.setPosition(250, 300);
+		haveBeenReset = true;
 		vertStop = 0;
 		horStop = 0;
 		stop = true;
@@ -172,7 +173,7 @@ public:
 		Text moneyDisplay, fuelDisplay;
 		Font spaceFont;
 		spaceFont.loadFromFile("SpaceGrotesk-Regular.ttf");
-		// spaceFont.loadFromFile("C:/Windows/Fonts/arial.ttf");
+		spaceFont.loadFromFile("C:/Windows/Fonts/arial.ttf");
 		// no default font QQ https://en.sfml-dev.org/forums/index.php?topic=8752.0
 		std::string moneyText = "$: ";
 		moneyText += std::to_string(money / MONEY_UNIT);
@@ -249,6 +250,24 @@ public:
 		stop = false;
 	}
 
+	void reset()
+	{
+		circle.setPosition(250, 300);
+		vertStop = 0;
+		horStop = 0;
+		up = false;
+		down = false;
+		left = false;
+		right = false;
+		fuel = FUEL_CAPACITY * FUEL_PER_UNIT;
+		speed = Vector2f(0, 0);
+		money = 0;
+		coinTimer = 0;
+		dmgTimer = 0;
+		hurtTime = 0;
+		haveBeenReset = true;
+	}
+
 	void end()
 	{
 		stop = true;
@@ -258,6 +277,17 @@ public:
 		down = false;
 		left = false;
 		right = false;
+		haveBeenReset = false;
+	}
+
+	bool empty()
+	{
+		return !fuel;
+	}
+
+	bool available()
+	{
+		return haveBeenReset;
 	}
 
 private:
@@ -275,6 +305,7 @@ private:
 	int dmgTimer;
 	Vector2f speed;
 	float hurtTime;
+	bool haveBeenReset;
 };
 
 int min(int a, int b)
