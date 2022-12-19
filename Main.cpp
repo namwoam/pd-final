@@ -202,7 +202,7 @@ int main()
 				if (curBg == 4)
 				{
 					curBg = 0;
-					player.setPos(250, 10);
+					player.setPos(250, 20);
 				}
 				break;
 
