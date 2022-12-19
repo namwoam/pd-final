@@ -7,7 +7,7 @@ using namespace sf;
 const int PLAYER_SIZE = 10;
 const float GRAVITY = 0.1;
 const float MANUAL_ACC = 0.3;
-const int FUEL_CAPACITY = 4;
+const int FUEL_CAPACITY = 400;
 const int FUEL_PER_UNIT = 50; // effects how fast fuel consumes
 const float FRICTION_CONSTANT = 0.001;
 const int COIN_COOL_DOWN = 1000; // effects how often a player can gain a coin
