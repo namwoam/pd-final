@@ -7,37 +7,42 @@ int collidesWithRest(Image image, int x, int y);
 int collidesWithWall(Image image, int x, int y);
 int collidesWithTrans(Image image, int x, int y);
 int collidesWithFinish(Image image, int x, int y);
-bool collidesWithCoin(Image &image, int x, int y);
+bool collidesWithCoin(Image& image, int x, int y);
+void clearCoin(Image& backGround, int x, int y);
+bool isCoinColor(Color c);
 
 int main()
 {
 
 	RenderWindow window(VideoMode(900, 900), "PD Final", Style::Titlebar | Style::Close);
 
-	Texture topLeft, topRight, bottomLeft, bottomRight;
+	Texture topLeft, topRight, bottomLeft, bottomRight, beginning;
 	topLeft.loadFromFile("topLeft.png");
 	topRight.loadFromFile("topRight.png");
 	bottomLeft.loadFromFile("bottomLeft.png");
 	bottomRight.loadFromFile("bottomRight.png");
+	beginning.loadFromFile("beginning.png");
 
-	Sprite *map[4];
+	Sprite* map[5];
 	map[0] = new Sprite(topLeft);
 	map[1] = new Sprite(topRight);
 	map[2] = new Sprite(bottomLeft);
 	map[3] = new Sprite(bottomRight);
+	map[4] = new Sprite(beginning);
 
-	Image imgMap[4];
+	Image imgMap[5];
 	imgMap[0].loadFromFile("topLeft.png");
 	imgMap[1].loadFromFile("topRight.png");
 	imgMap[2].loadFromFile("bottomLeft.png");
 	imgMap[3].loadFromFile("bottomRight.png");
+	imgMap[4].loadFromFile("beginning.png");
 
 	Event event;
 
 	Entity player;
 	Clock clock;
 
-	int curBg = 0;
+	int curBg = 4;
 
 	while (window.isOpen())
 	{
@@ -45,12 +50,24 @@ int main()
 		{
 			if (event.type == Event::Closed)
 				window.close();
-			if (event.type == Event::KeyPressed)
+			if (curBg < 4)
 			{
-				player.processEvents(event.key.code, true);
+				if (event.type == Event::KeyPressed)
+					player.processEvents(event.key.code, true);
+
+				if (event.type == Event::KeyReleased)
+					player.processEvents(event.key.code, false);
 			}
-			if (event.type == Event::KeyReleased)
-				player.processEvents(event.key.code, false);
+			else
+			{
+				if (event.type == Event::KeyPressed)
+				{
+					if (event.key.code == Keyboard::Space)
+					{
+						player.begin();
+					}
+				}
+			}
 		}
 
 		window.clear();
@@ -60,88 +77,88 @@ int main()
 
 		switch (collidesWithRest(imgMap[curBg], player.getPos().x, player.getPos().y))
 		{
-		case 0:
-			break;
+			case 0:
+				break;
 
-		case 1:
-			player.yStop(false);
-			player.addFuel();
-			break;
+			case 1:
+				player.yStop(false);
+				player.addFuel();
+				break;
 
-		case 2:
-			player.yStop(true);
-			break;
+			case 2:
+				player.yStop(true);
+				break;
 
-		case 3:
-			player.xStop(false);
-			break;
+			case 3:
+				player.xStop(false);
+				break;
 
-		case 4:
-			player.xStop(true);
-			break;
+			case 4:
+				player.xStop(true);
+				break;
 
-		default:
-			break;
+			default:
+				break;
 		}
 
 		switch (collidesWithWall(imgMap[curBg], player.getPos().x, player.getPos().y))
 		{
-		case 0:
-			break;
+			case 0:
+				break;
 
-		case 1:
-			player.yStop(false);
-			player.damage();
-			break;
+			case 1:
+				player.yStop(false);
+				player.damage();
+				break;
 
-		case 2:
-			player.yStop(true);
-			player.damage();
-			break;
+			case 2:
+				player.yStop(true);
+				player.damage();
+				break;
 
-		case 3:
-			player.xStop(false);
-			player.damage();
-			break;
+			case 3:
+				player.xStop(false);
+				player.damage();
+				break;
 
-		case 4:
-			player.xStop(true);
-			player.damage();
-			break;
+			case 4:
+				player.xStop(true);
+				player.damage();
+				break;
 
-		default:
-			break;
+			default:
+				break;
 		}
 
 		switch (collidesWithTrans(imgMap[curBg], player.getPos().x, player.getPos().y))
 		{
-		case 0:
-			break;
+			case 0:
+				break;
 
-		case 1:
-			curBg += 2;
-			player.setPos(player.getPos().x, player.getPos().y - 840);
-			break;
+			case 1:
+				curBg += 2;
+				player.setPos(player.getPos().x, player.getPos().y - 840);
+				break;
 
-		case 2:
-			curBg -= 2;
-			player.setPos(player.getPos().x, player.getPos().y + 840);
-			break;
+			case 2:
+				curBg -= 2;
+				player.setPos(player.getPos().x, player.getPos().y + 840);
+				break;
 
-		case 3:
-			// shift x-coordinate to the right
-			curBg -= 1;
-			player.setPos(player.getPos().x + 840, player.getPos().y);
-			break;
+			case 3:
+				// shift x-coordinate to the right
+				curBg -= 1;
+				player.setPos(player.getPos().x + 840, player.getPos().y);
+				break;
 
-		case 4:
-			// shift x-coordinate to the left
-			curBg += 1;
-			player.setPos(player.getPos().x - 840, player.getPos().y);
-			break;
+			case 4:
+				// shift x-coordinate to the left
+				curBg += 1;
+				player.setPos(player.getPos().x - 840, player.getPos().y);
+				break;
 
-		default:
-			break;
+			default:
+				break;
 		}
 
 		if (collidesWithCoin(imgMap[curBg], player.getPos().x, player.getPos().y))
@@ -151,19 +168,27 @@ int main()
 
 		switch (collidesWithFinish(imgMap[curBg], player.getPos().x, player.getPos().y))
 		{
-		case 0:
-			break;
+			case 0:
+				break;
 
-		case 1:
-			player.yStop(true);
-			break;
+			case 1:
+				player.yStop(true);
+				break;
 
-		case 2:
-			player.end();
-			break;
+			case 2:
+				player.end();
+				break;
 
-		default:
-			break;
+			case 3:
+				if (curBg == 4)
+				{
+					curBg = 0;
+					player.setPos(250, 10);
+				}
+				break;
+
+			default:
+				break;
 		}
 		topLeft.loadFromImage(imgMap[0]);
 		topRight.loadFromImage(imgMap[1]);
@@ -238,6 +263,9 @@ int collidesWithFinish(Image backGround, int x, int y)
 
 	if (backGround.getPixel(x - PLAYER_SIZE, y).r > 215 && backGround.getPixel(x - PLAYER_SIZE, y).r < 235 && backGround.getPixel(x - PLAYER_SIZE, y).g > 150 && backGround.getPixel(x - PLAYER_SIZE, y).g < 180 && backGround.getPixel(x - PLAYER_SIZE, y).b > 230 && backGround.getPixel(x - PLAYER_SIZE, y).b < 255)
 		return 2;
+
+	if (backGround.getPixel(x, y + PLAYER_SIZE).r > 215 && backGround.getPixel(x, y + PLAYER_SIZE).r < 235 && backGround.getPixel(x, y + PLAYER_SIZE).g > 150 && backGround.getPixel(x, y + PLAYER_SIZE).g < 180 && backGround.getPixel(x, y + PLAYER_SIZE).b > 230 && backGround.getPixel(x, y + PLAYER_SIZE).b < 255)
+		return 3;
 	return 0;
 }
 
@@ -253,7 +281,7 @@ bool isCoinColor(Color c)
 	}
 }
 
-void clearCoin(Image &backGround, int x, int y)
+void clearCoin(Image& backGround, int x, int y)
 {
 	if (isCoinColor(backGround.getPixel(x, y)))
 	{
@@ -276,7 +304,7 @@ void clearCoin(Image &backGround, int x, int y)
 	return;
 }
 
-bool collidesWithCoin(Image &backGround, int x, int y)
+bool collidesWithCoin(Image& backGround, int x, int y)
 {
 	bool flag = false;
 	auto coinPos = Vector2i();
