@@ -4,12 +4,12 @@
 
 using namespace sf;
 
-const int PLAYER_SIZE = 10;
+const int PLAYER_SIZE = 8;
 const float GRAVITY = 0.1;
-const float MANUAL_ACC = 0.5;
+const float MANUAL_ACC = 0.8;
 const int FUEL_CAPACITY = 4000;
 const int FUEL_PER_UNIT = 50; // effects how fast fuel consumes
-const float FRICTION_CONSTANT = 0.001;
+const float FRICTION_CONSTANT = 0.0005;
 const int COIN_COOL_DOWN = 1000; // effects how often a player can gain a coin
 const int DMG_COOL_DOWN = 250;	 // effects the invincible time after taking damage
 const int MONEY_UNIT = 25;		 // effects the frequency of adding fuel
@@ -151,7 +151,7 @@ public:
 			float r = linearTransformaion(Color::Red.r, Color::White.r, 0, HURT_EFFECT, hurtTime);
 			float g = linearTransformaion(Color::Red.g, Color::White.g, 0, HURT_EFFECT, hurtTime);
 			float b = linearTransformaion(Color::Red.b, Color::White.b, 0, HURT_EFFECT, hurtTime);
-			//std::cout << r << ' ' << g << ' ' << b << std::endl;
+			// std::cout << r << ' ' << g << ' ' << b << std::endl;
 			auto currentColor = Color(r, g, b, 255);
 			circle.setFillColor(currentColor);
 		}
