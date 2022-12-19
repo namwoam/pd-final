@@ -73,7 +73,25 @@ int main()
 						if (player.available())
 							player.begin();
 						else
+						{
+							delete map[0];
+							delete map[1];
+							delete map[2];
+							delete map[3];
 							player.reset();
+							topLeft.loadFromFile("topLeft.png");
+							topRight.loadFromFile("topRight.png");
+							bottomLeft.loadFromFile("bottomLeft.png");
+							bottomRight.loadFromFile("bottomRight.png");
+							map[0] = new Sprite(topLeft);
+							map[1] = new Sprite(topRight);
+							map[2] = new Sprite(bottomLeft);
+							map[3] = new Sprite(bottomRight);
+							imgMap[0].loadFromFile("topLeft.png");
+							imgMap[1].loadFromFile("topRight.png");
+							imgMap[2].loadFromFile("bottomLeft.png");
+							imgMap[3].loadFromFile("bottomRight.png");
+						}
 						curBg = 4;
 					}
 					if (event.key.code == Keyboard::Escape)
@@ -290,7 +308,7 @@ int collidesWithFinish(Image backGround, int x, int y)
 
 bool isCoinColor(Color c)
 {
-	if (c.r > 220 && c.g > 180 && c.b < 50)
+	if (c.r > 45 && c.g > 45)
 	{
 		return true;
 	}
@@ -304,9 +322,10 @@ void clearCoin(Image& backGround, int x, int y)
 {
 	if (isCoinColor(backGround.getPixel(x, y)))
 	{
-		backGround.setPixel(x, y, Color::Black);
+		Color bg(39, 39, 39);
+		backGround.setPixel(x, y, bg);
 		// std::cout << "found coin pixel at " << x << ' ' << y << std::endl;
-		int interval = 5;
+		int interval = 1;
 		for (int i = -interval; i <= interval; i++)
 		{
 			for (int k = -interval; k <= interval; k++)
