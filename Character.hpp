@@ -4,12 +4,12 @@
 
 using namespace sf;
 
-const int PLAYER_SIZE = 8;
+const int PLAYER_SIZE = 10;
 const float GRAVITY = 0.1;
-const float MANUAL_ACC = 0.8;
+const float MANUAL_ACC = 0.5;
 const int FUEL_CAPACITY = 4000;
 const int FUEL_PER_UNIT = 50; // effects how fast fuel consumes
-const float FRICTION_CONSTANT = 0.0005;
+const float FRICTION_CONSTANT = 0.001;
 const int COIN_COOL_DOWN = 1000; // effects how often a player can gain a coin
 const int DMG_COOL_DOWN = 250;	 // effects the invincible time after taking damage
 const int MONEY_UNIT = 25;		 // effects the frequency of adding fuel
@@ -17,10 +17,7 @@ const int FUEL_PER_MONEY = 50;	 // effects how much fuel a player gains through 
 const float HURT_EFFECT = 0.3;
 
 int min(int a, int b);
-float linearTransformaion(float startVal, float endVal, float startPos, float endPos, float currentPos)
-{
-	return startVal + (endVal - startVal) * ((currentPos - startPos) / (endPos - startPos));
-}
+float linearTransformation(float startVal, float endVal, float startPos, float endPos, float currentPos);
 
 class Entity
 {
@@ -28,10 +25,10 @@ public:
 	Entity()
 	{
 		circle.setRadius(PLAYER_SIZE);
-		circle.setPosition(250, 10);
+		circle.setPosition(250, 300);
 		vertStop = 0;
 		horStop = 0;
-		stop = false;
+		stop = true;
 		up = false;
 		down = false;
 		left = false;
@@ -148,10 +145,10 @@ public:
 		}
 		else
 		{
-			float r = linearTransformaion(Color::Red.r, Color::White.r, 0, HURT_EFFECT, hurtTime);
-			float g = linearTransformaion(Color::Red.g, Color::White.g, 0, HURT_EFFECT, hurtTime);
-			float b = linearTransformaion(Color::Red.b, Color::White.b, 0, HURT_EFFECT, hurtTime);
-			// std::cout << r << ' ' << g << ' ' << b << std::endl;
+			float r = linearTransformation(Color::Red.r, Color::White.r, 0, HURT_EFFECT, hurtTime);
+			float g = linearTransformation(Color::Red.g, Color::White.g, 0, HURT_EFFECT, hurtTime);
+			float b = linearTransformation(Color::Red.b, Color::White.b, 0, HURT_EFFECT, hurtTime);
+			//std::cout << r << ' ' << g << ' ' << b << std::endl;
 			auto currentColor = Color(r, g, b, 255);
 			circle.setFillColor(currentColor);
 		}
@@ -247,6 +244,11 @@ public:
 		}
 	}
 
+	void begin()
+	{
+		stop = false;
+	}
+
 	void end()
 	{
 		stop = true;
@@ -280,4 +282,9 @@ int min(int a, int b)
 	if (a < b)
 		return a;
 	return b;
+}
+
+float linearTransformation(float startVal, float endVal, float startPos, float endPos, float currentPos)
+{
+	return startVal + (endVal - startVal) * ((currentPos - startPos) / (endPos - startPos));
 }
