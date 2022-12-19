@@ -157,7 +157,7 @@ public:
 		}
 	}
 
-	void updateDisplay(RenderWindow &window)
+	void updateDisplay(RenderWindow& window)
 	{
 		if (stop)
 			return;
@@ -250,6 +250,12 @@ public:
 	void end()
 	{
 		stop = true;
+		speed.x = 0;
+		speed.y = 0;
+		up = false;
+		down = false;
+		left = false;
+		right = false;
 	}
 
 private:
