@@ -2,6 +2,8 @@
 #include <iostream>
 #include <string>
 
+using namespace sf;
+
 const int PLAYER_SIZE = 10;
 const float GRAVITY = 0.1;
 const float MANUAL_ACC = 0.5;
@@ -12,8 +14,13 @@ const int COIN_COOL_DOWN = 1000; // effects how often a player can gain a coin
 const int DMG_COOL_DOWN = 250;	 // effects the invincible time after taking damage
 const int MONEY_UNIT = 25;		 // effects the frequency of adding fuel
 const int FUEL_PER_MONEY = 50;	 // effects how much fuel a player gains through one coin
+const float HURT_EFFECT = 0.3;
 
 int min(int a, int b);
+float linearTransformaion(float startVal, float endVal, float startPos, float endPos, float currentPos)
+{
+	return startVal + (endVal - startVal) * ((currentPos - startPos) / (endPos - startPos));
+}
 
 class Entity
 {
@@ -34,6 +41,7 @@ public:
 		money = 0;
 		coinTimer = 0;
 		dmgTimer = 0;
+		hurtTime = 0;
 	}
 
 	Vector2f getPos()
@@ -128,9 +136,28 @@ public:
 		// add friction see https://www.softschools.com/formulas/physics/air_resistance_formula/85/
 		speed.x -= (speed.x > 0 ? 1 : -1) * FRICTION_CONSTANT * speed.x * speed.x * elapsed.asSeconds();
 		speed.y -= (speed.y > 0 ? 1 : -1) * FRICTION_CONSTANT * speed.y * speed.y * elapsed.asSeconds();
+
+		if (hurtTime < 1000)
+		{
+			hurtTime += elapsed.asSeconds();
+		}
+		if (hurtTime > HURT_EFFECT)
+		{
+			hurtTime = 2000;
+			circle.setFillColor(Color::White);
+		}
+		else
+		{
+			float r = linearTransformaion(Color::Red.r, Color::White.r, 0, HURT_EFFECT, hurtTime);
+			float g = linearTransformaion(Color::Red.g, Color::White.g, 0, HURT_EFFECT, hurtTime);
+			float b = linearTransformaion(Color::Red.b, Color::White.b, 0, HURT_EFFECT, hurtTime);
+			//std::cout << r << ' ' << g << ' ' << b << std::endl;
+			auto currentColor = Color(r, g, b, 255);
+			circle.setFillColor(currentColor);
+		}
 	}
 
-	void updateDisplay(RenderWindow& window)
+	void updateDisplay(RenderWindow &window)
 	{
 		if (stop)
 			return;
@@ -147,8 +174,8 @@ public:
 		window.draw(circle);
 		Text moneyDisplay, fuelDisplay;
 		Font spaceFont;
-		// spaceFont.loadFromFile("SpaceGrotesk-Regular.ttf");
-		spaceFont.loadFromFile("C:/Windows/Fonts/arial.ttf");
+		spaceFont.loadFromFile("SpaceGrotesk-Regular.ttf");
+		// spaceFont.loadFromFile("C:/Windows/Fonts/arial.ttf");
 		// no default font QQ https://en.sfml-dev.org/forums/index.php?topic=8752.0
 		std::string moneyText = "$: ";
 		moneyText += std::to_string(money / MONEY_UNIT);
@@ -215,6 +242,8 @@ public:
 		{
 			fuel -= min(25 * FUEL_PER_UNIT, fuel);
 			dmgTimer = DMG_COOL_DOWN;
+			circle.setFillColor(Color::Red);
+			hurtTime = 0;
 		}
 	}
 
@@ -237,6 +266,7 @@ private:
 	int coinTimer;
 	int dmgTimer;
 	Vector2f speed;
+	float hurtTime;
 };
 
 int min(int a, int b)
