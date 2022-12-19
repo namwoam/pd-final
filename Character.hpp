@@ -173,7 +173,7 @@ public:
 		Text moneyDisplay, fuelDisplay;
 		Font spaceFont;
 		spaceFont.loadFromFile("SpaceGrotesk-Regular.ttf");
-		spaceFont.loadFromFile("C:/Windows/Fonts/arial.ttf");
+		// spaceFont.loadFromFile("C:/Windows/Fonts/arial.ttf");
 		// no default font QQ https://en.sfml-dev.org/forums/index.php?topic=8752.0
 		std::string moneyText = "$: ";
 		moneyText += std::to_string(money / MONEY_UNIT);
