@@ -1,5 +1,6 @@
 #include <SFML/Graphics.hpp>
 #include <cmath>
+#include <random>
 class ParticleSystem : public sf::Drawable, public sf::Transformable
 {
 public:
