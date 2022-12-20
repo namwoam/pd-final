@@ -1,4 +1,5 @@
 #include "Character.hpp"
+#include "particle.hpp"
 #include <SFML/Graphics.hpp>
 #include <iostream>
 using namespace sf;
@@ -13,7 +14,7 @@ bool isCoinColor(Color c);
 
 int main()
 {
-
+	ParticleSystem particles(1000);
 	RenderWindow window(VideoMode(900, 900), "PD Final", Style::Titlebar | Style::Close);
 
 	Texture topLeft, topRight, bottomLeft, bottomRight, beginning, succeeded, failed;
@@ -108,8 +109,11 @@ int main()
 
 		window.clear();
 		window.draw(*map[curBg]);
+		particles.setEmitter(player.getPos());
 		Time elapsed = clock.restart();
 		player.updateMotion(elapsed);
+		particles.setEmission(player.getLastMotion() , player.getSpeed());
+		particles.update(elapsed);
 
 		switch (collidesWithRest(imgMap[curBg], player.getPos().x, player.getPos().y))
 		{
@@ -236,6 +240,7 @@ int main()
 		map[2] = new Sprite(bottomLeft);
 		map[3] = new Sprite(bottomRight);
 		player.updateDisplay(window);
+		window.draw(particles);
 		window.display();
 	}
 

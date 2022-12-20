@@ -13,7 +13,7 @@ const float FRICTION_CONSTANT = 0.001;
 const int COIN_COOL_DOWN = 1000; // effects how often a player can gain a coin
 const int DMG_COOL_DOWN = 250;	 // effects the invincible time after taking damage
 const int MONEY_UNIT = 25;		 // effects the frequency of adding fuel
-const int FUEL_PER_MONEY = 50;	 // effects how much fuel a player gains through one coin
+const int FUEL_PER_MONEY = 100;	 // effects how much fuel a player gains through one coin
 const float HURT_EFFECT = 0.3;
 
 int min(int a, int b);
@@ -39,7 +39,8 @@ public:
 		money = 0;
 		coinTimer = 0;
 		dmgTimer = 0;
-		hurtTime = 0;
+		hurtTime = 2000;
+		lastMotion = -1;
 	}
 
 	Vector2f getPos()
@@ -52,7 +53,6 @@ public:
 	{
 		circle.setPosition(x - PLAYER_SIZE, y - PLAYER_SIZE);
 	}
-
 	void processEvents(Keyboard::Key key, bool checkPressed)
 	{
 		if (stop)
@@ -62,18 +62,22 @@ public:
 			if (key == Keyboard::W)
 			{
 				down = true;
+				lastMotion = 270;
 			}
 			if (key == Keyboard::A)
 			{
 				right = true;
+				lastMotion = 180;
 			}
 			if (key == Keyboard::S)
 			{
 				up = true;
+				lastMotion = 90;
 			}
 			if (key == Keyboard::D)
 			{
 				left = true;
+				lastMotion = 0;
 			}
 		}
 		else
@@ -81,22 +85,31 @@ public:
 			if (key == Keyboard::W)
 			{
 				down = false;
+				lastMotion = -1;
 			}
 			if (key == Keyboard::A)
 			{
 				right = false;
+				lastMotion = -1;
 			}
 			if (key == Keyboard::S)
 			{
 				up = false;
+				lastMotion = -1;
 			}
 			if (key == Keyboard::D)
 			{
 				left = false;
+				lastMotion = -1;
 			}
 		}
 	}
-
+	int getLastMotion(){
+		return lastMotion;
+	}
+	auto getSpeed(){
+		return speed;
+	}
 	void updateMotion(Time elapsed)
 	{
 		if (stop)
@@ -264,7 +277,7 @@ public:
 		money = 0;
 		coinTimer = 0;
 		dmgTimer = 0;
-		hurtTime = 0;
+		hurtTime = 2000;
 		haveBeenReset = true;
 	}
 
@@ -306,6 +319,7 @@ private:
 	Vector2f speed;
 	float hurtTime;
 	bool haveBeenReset;
+	int lastMotion;
 };
 
 int min(int a, int b)
