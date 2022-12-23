@@ -22,6 +22,7 @@ float linearTransformation(float startVal, float endVal, float startPos, float e
 class Entity
 {
 public:
+	bool god = false;
 	Entity()
 	{
 		circle.setRadius(PLAYER_SIZE);
@@ -102,16 +103,31 @@ public:
 				left = false;
 				lastMotion = -1;
 			}
+			if (key == Keyboard::G)
+			{
+				god = !god;
+				if (god == true)
+				{
+					circle.setFillColor(Color::Green);
+				}
+				else
+				{
+					circle.setFillColor(Color::White);
+				}
+			}
 		}
 	}
-	int getLastMotion(){
+	int getLastMotion()
+	{
 		return lastMotion;
 	}
-	auto getSpeed(){
+	auto getSpeed()
+	{
 		return speed;
 	}
 	void updateMotion(Time elapsed)
 	{
+
 		if (stop)
 			return;
 
@@ -147,7 +163,6 @@ public:
 		// add friction see https://www.softschools.com/formulas/physics/air_resistance_formula/85/
 		speed.x -= (speed.x > 0 ? 1 : -1) * FRICTION_CONSTANT * speed.x * speed.x * elapsed.asSeconds();
 		speed.y -= (speed.y > 0 ? 1 : -1) * FRICTION_CONSTANT * speed.y * speed.y * elapsed.asSeconds();
-
 		if (hurtTime < 1000)
 		{
 			hurtTime += elapsed.asSeconds();
@@ -162,14 +177,18 @@ public:
 			float r = linearTransformation(Color::Red.r, Color::White.r, 0, HURT_EFFECT, hurtTime);
 			float g = linearTransformation(Color::Red.g, Color::White.g, 0, HURT_EFFECT, hurtTime);
 			float b = linearTransformation(Color::Red.b, Color::White.b, 0, HURT_EFFECT, hurtTime);
-			//std::cout << r << ' ' << g << ' ' << b << std::endl;
+			// std::cout << r << ' ' << g << ' ' << b << std::endl;
 			auto currentColor = Color(r, g, b, 255);
 			circle.setFillColor(currentColor);
 		}
 	}
 
-	void updateDisplay(RenderWindow& window)
+	void updateDisplay(RenderWindow &window)
 	{
+		if (god == true)
+		{
+			circle.setFillColor(Color::Green);
+		}
 		if (stop)
 			return;
 
@@ -181,7 +200,6 @@ public:
 
 		if (dmgTimer > 0)
 			dmgTimer--;
-
 		window.draw(circle);
 		Text moneyDisplay, fuelDisplay;
 		Font spaceFont;
@@ -279,6 +297,7 @@ public:
 		dmgTimer = 0;
 		hurtTime = 2000;
 		haveBeenReset = true;
+		god = false;
 	}
 
 	void end()

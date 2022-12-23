@@ -141,34 +141,35 @@ int main()
 				break;
 		}
 
-		switch (collidesWithWall(imgMap[curBg], player.getPos().x, player.getPos().y))
-		{
-			case 0:
-				break;
+		if (!player.god)
+			switch (collidesWithWall(imgMap[curBg], player.getPos().x, player.getPos().y))
+			{
+				case 0:
+					break;
 
-			case 1:
-				player.yStop(false);
-				player.damage();
-				break;
+				case 1:
+					player.yStop(false);
+					player.damage();
+					break;
 
-			case 2:
-				player.yStop(true);
-				player.damage();
-				break;
+				case 2:
+					player.yStop(true);
+					player.damage();
+					break;
 
-			case 3:
-				player.xStop(false);
-				player.damage();
-				break;
+				case 3:
+					player.xStop(false);
+					player.damage();
+					break;
 
-			case 4:
-				player.xStop(true);
-				player.damage();
-				break;
+				case 4:
+					player.xStop(true);
+					player.damage();
+					break;
 
-			default:
-				break;
-		}
+				default:
+					break;
+			}
 
 		switch (collidesWithTrans(imgMap[curBg], player.getPos().x, player.getPos().y))
 		{
@@ -217,6 +218,7 @@ int main()
 
 			case 2:
 				player.end();
+				particles.setEmission(player.getLastMotion() , player.getSpeed());
 				curBg = 5;
 				break;
 
